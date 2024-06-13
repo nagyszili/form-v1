@@ -1,39 +1,36 @@
-import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
 import { StyleSheet, View, Text, TextInput, Button } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-
-const ACCOUNT_TYPES = [
-  { label: "Advenced", value: "Advenced" },
-  { label: "Manual", value: "Manual" },
-];
+import Checkbox from "expo-checkbox";
+import { ACCOUNT_TYPES } from "@/constants/constants";
+import { useFormV1 } from "@/hooks/useFormV1";
 
 export default function HomeScreen() {
-  const [accountType, setAccountType] = useState(ACCOUNT_TYPES[0]);
+  const {
+    accountType,
+    isUsedSSL,
+    userName,
+    password,
+    setUserName,
+    setPassword,
+    setIsUsedSSL,
+    setAccountType,
+    onSubmit,
+  } = useFormV1();
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Text>Account Type:</Text>
-
         <Dropdown
           style={[styles.dropdown]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
           data={ACCOUNT_TYPES}
           labelField="label"
           valueField="value"
-          // placeholder={!isFocus ? "Select item" : "..."}
-          searchPlaceholder="Search..."
           value={accountType}
-          // onFocus={() => setIsFocus(true)}
-          // onBlur={() => setIsFocus(false)}
-          onChange={(item) => {
-            // setValue(item.value);
-            // setIsFocus(false);
-          }}
+          onChange={setAccountType}
         />
       </View>
       <View style={styles.row}>
@@ -43,6 +40,8 @@ export default function HomeScreen() {
           placeholder="name@example.com"
           textContentType="username"
           placeholderTextColor="gray"
+          value={userName}
+          onChangeText={setUserName}
         />
       </View>
       <View style={styles.row}>
@@ -53,6 +52,8 @@ export default function HomeScreen() {
           textContentType="password"
           secureTextEntry
           placeholderTextColor="gray"
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
 
@@ -65,28 +66,35 @@ export default function HomeScreen() {
           placeholderTextColor="gray"
         />
       </View>
+      {accountType.value === "Advenced" && (
+        <>
+          <View style={styles.row}>
+            <Text>Server Path:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="/calendars/user/"
+              placeholderTextColor="gray"
+            />
+          </View>
 
-      <View style={styles.row}>
-        <Text>Server Path:</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="/calendars/user/"
-          placeholderTextColor="gray"
-        />
-      </View>
-
-      <View style={styles.row}>
-        <View style={styles.row}>
-          <Text>Port:</Text>
-          <TextInput
-            style={[styles.textInput, { width: 60 }]}
-            keyboardType="number-pad"
-            placeholderTextColor="gray"
-          />
-        </View>
-      </View>
+          <View style={styles.row}>
+            <View style={styles.row}>
+              <Text>Port:</Text>
+              <TextInput
+                style={[styles.textInput, { width: 60 }]}
+                keyboardType="number-pad"
+                placeholderTextColor="gray"
+              />
+            </View>
+            <View style={styles.row}>
+              <Checkbox value={isUsedSSL} onValueChange={setIsUsedSSL} />
+              <Text>Use SSL</Text>
+            </View>
+          </View>
+        </>
+      )}
       <View style={styles.buttonContainer}>
-        <Button title="Submit" onPress={() => {}} />
+        <Button title="Submit" onPress={onSubmit} />
       </View>
     </View>
   );
@@ -116,6 +124,11 @@ const styles = StyleSheet.create({
     width: 200,
     borderColor: "gray",
     borderWidth: 1,
+    padding: 4,
+  },
+  focused: {
+    borderColor: "orange",
+    borderWidth: 2,
   },
 
   dropdown: {
@@ -127,27 +140,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
   },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
   placeholderStyle: {
     fontSize: 16,
   },
   selectedTextStyle: {
     fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
   },
   inputSearchStyle: {
     height: 40,
