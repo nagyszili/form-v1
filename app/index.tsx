@@ -7,13 +7,20 @@ import { useFormV1 } from "@/hooks/useFormV1";
 export default function HomeScreen() {
   const {
     accountType,
-    isUsedSSL,
     userName,
     password,
+    serverAddress,
+    serverPath,
+    port,
+    isUsedSSL,
+
+    setAccountType,
     setUserName,
     setPassword,
+    setServerAddress,
+    setServerPath,
+    setPort,
     setIsUsedSSL,
-    setAccountType,
     onSubmit,
   } = useFormV1();
 
@@ -38,10 +45,11 @@ export default function HomeScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="name@example.com"
-          textContentType="username"
+          textContentType="emailAddress"
           placeholderTextColor="gray"
           value={userName}
           onChangeText={setUserName}
+          autoCapitalize="none"
         />
       </View>
       <View style={styles.row}>
@@ -64,9 +72,11 @@ export default function HomeScreen() {
           placeholder="example.com"
           textContentType="URL"
           placeholderTextColor="gray"
+          value={serverAddress}
+          onChangeText={setServerAddress}
         />
       </View>
-      {accountType.value === "Advenced" && (
+      {accountType.value === ACCOUNT_TYPES[0].value && (
         <>
           <View style={styles.row}>
             <Text>Server Path:</Text>
@@ -74,6 +84,8 @@ export default function HomeScreen() {
               style={styles.textInput}
               placeholder="/calendars/user/"
               placeholderTextColor="gray"
+              value={serverPath}
+              onChangeText={setServerPath}
             />
           </View>
 
@@ -84,6 +96,10 @@ export default function HomeScreen() {
                 style={[styles.textInput, { width: 60 }]}
                 keyboardType="number-pad"
                 placeholderTextColor="gray"
+                value={port?.toString()}
+                onChangeText={(text) =>
+                  setPort(Number(text.replace(/[^0-9]/g, "")) || undefined)
+                }
               />
             </View>
             <View style={styles.row}>

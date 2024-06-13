@@ -1,4 +1,4 @@
 export const ACCOUNT_TYPES = [
-  { label: "Advenced", value: "Advenced" },
+  { label: "Advanced", value: "Advanced" },
   { label: "Manual", value: "Manual" },
 ];
